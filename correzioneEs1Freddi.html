@@ -1,0 +1,105 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Gestione delle iscrizioni</title>
+    </head>
+    <style>
+        table, td, th {
+            border: 1px solid black;
+            text-align: center;
+        }
+    </style>
+    <body>
+        <form id="myForm">
+            <table>
+                <tr>
+                    <th colspan="2">Inserimento valori</th>
+                </tr>
+                <tr>
+                    <th>ID studente</th>
+                    <th><input type="text" id="codice" name="codice" required></th>
+                </tr>
+                <tr>
+                    <th>Ore di frequenza</th>
+                    <th><input type="number" id="ore" name="ore" required></th>
+                </tr>
+                <tr>
+                    <th><button type="button" id="inserisci" onclick="calcola()">Aggiungi iscrizione</button></th>
+                    <th><button type="button" id="mostra" onclick="mostraTabella()">Mostra iscrizione</button></th>    
+                </tr>
+            </table>
+        </form> 
+        <div id="tabella">
+            
+        </div>
+        <div>
+            <p id="totale"></p>
+        </div>
+    </body>
+    <script>
+        var totale = 0;
+        var tabella = ` <table>
+                            <tr>
+                                <th colspan="3">Tabella studenti</th>
+                            </tr>
+                            <tr>
+                                <th>Id studente</th>
+                                <th>Ore di frequenza</th>
+                                <th>Quota totale</th>
+                            </tr>`;
+
+        function calcola(){
+            let codice = document.getElementById("codice").value;
+            let ore = document.getElementById("ore").value;
+            let studenti = [];
+            let costoPerOra = 15;
+            
+            if(ore > 0){
+                if(codice == null || codice == ""){
+                    alert("Inserisci il codice studente")
+                }
+                else{
+                    var costo = ore * costoPerOra;
+                    let quota = 0;
+                    
+                    if(ore>=1 && ore<=10){
+                        quota = costo;
+                    }
+                    else if(ore>=11 && ore<=20){
+                        quota = costo - (costo*(5/100));
+                    }
+                    else if(ore>=21){
+                        quota = costo - (costo*(10/100));
+                    }
+                    studenti.push({codice:codice, ore:ore, quota:quota});
+                    for(let studente of studenti){
+                        inserisciTabella(studente.codice, studente.ore, studente.quota) ; 
+                    }
+                    for(let studente of studenti){
+                        if(studente.quota>200){
+                            totale += studente.quota;
+                        }
+                    }
+                    ocument.getElementById("codice").value = null;
+                    document.getElementById("ore").value = null;
+                }
+            }
+            else{
+                alert("Inserisci le ore positive")
+            }
+        }
+
+        function inserisciTabella(codice, ore, quota){
+            tabella += `<tr>
+                            <td>${codice}</th>
+                            <td>${ore}</td>
+                            <td>${quota}</td>
+                        </tr>`;
+        }
+            
+        function mostraTabella(){
+            document.getElementById("tabella").innerHTML = tabella;
+            document.getElementById("totale").innerText = "Totale iscrizioni superiori a 200€: "+totale+"€";
+        }
+    </script>
+</html>
